@@ -19,12 +19,28 @@ export function findBestRooms(rooms, numRooms) {
   });
 
   // Try to find rooms on the same floor
-  for (let floor = 1; floor <= 10; floor++) {
-    if (roomsByFloor[floor] && roomsByFloor[floor].length >= numRooms) {
-      return roomsByFloor[floor].slice(0, numRooms);
+ 
+  let bestCombinationOnFloor = null;
+  let minTravelTimeOnFloor = Infinity;
+
+  for (const [floor, roomList] of Object.entries(roomsByFloor)) {
+    if (roomList.length >= numRooms) {
+      roomList.sort((a, b) => a.number - b.number);
+      for (let i = 0; i <= roomList.length - numRooms; i++) {
+        const travelTime = roomList[i + numRooms - 1].number - roomList[i].number;
+        if (travelTime < minTravelTimeOnFloor) {
+          minTravelTimeOnFloor = travelTime;
+          bestCombinationOnFloor = roomList.slice(i, i + numRooms).map(room => room);
+        }
+      }
     }
   }
 
+  if (bestCombinationOnFloor) {
+   
+    return bestCombinationOnFloor;
+  }
+  
   // If not enough rooms on the same floor, find the best combination across floors using dynamic programming
   const dp = Array(availableRooms.length + 1).fill(null).map(() => Array(numRooms + 1).fill(Infinity));
   const path = Array(availableRooms.length + 1).fill(null).map(() => Array(numRooms + 1).fill(null));

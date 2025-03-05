@@ -10,6 +10,7 @@ const RoomBooking = () => {
   const [numRooms, setNumRooms] = useState();
   const [loading, setLoading] = useState(false);
   const [randomOccFlag, setRandomOccFlag] = useState(false);
+  const [previousBookedRooms, setPreviousBookedRooms] = useState([]);
 
   function initializeRooms() {
     const rooms = {};
@@ -33,6 +34,7 @@ const RoomBooking = () => {
 
     setTimeout(() => {
       const bestRooms = findBestRooms(rooms, numberOfRooms);
+      console.log(bestRooms);
       setLoading(false);
 
       if (!bestRooms) {
@@ -44,6 +46,7 @@ const RoomBooking = () => {
         room.booked = true;
       });
 
+      setPreviousBookedRooms(bookedRooms);
       setBookedRooms([...bookedRooms, ...bestRooms]);
       setRooms({ ...rooms });
       toast.success('Rooms booked successfully!');
@@ -54,6 +57,7 @@ const RoomBooking = () => {
   function handleReset() {
     setRooms(initializeRooms());
     setBookedRooms([]);
+    setPreviousBookedRooms([]);
     setNumRooms('');
     toast.info('Reset successful!');
   }
@@ -66,6 +70,7 @@ const RoomBooking = () => {
       });
     }
     setRooms(newRooms);
+    setNumRooms('');
     if(randomOccFlag){
         toast.info('Random occupancy generated!');
     }
@@ -126,7 +131,7 @@ const handleKeyPress = (event) => {
                 {rooms[floor].map(room => (
                   <div
                     key={room.number}
-                    className={`room ${room.booked ? 'booked' : ''} ${bookedRooms.includes(room) ? 'newly-booked' : ''}`}
+                    className={`room ${room.booked ? 'booked' : ''} ${previousBookedRooms.includes(room) ? 'previously-booked' : ''} ${bookedRooms.includes(room) ? 'newly-booked' : ''}`}
                   >
                     {room.number}
                   </div>
@@ -137,8 +142,31 @@ const handleKeyPress = (event) => {
           ))}
           </div>
         </div>
-        <ToastContainer />
-      </div>
+      
+       <div className="legend card">
+         <div className="legend-item">
+         <div className="legend-box occupied"></div>
+         <span>Occupied Rooms</span>
+       </div>
+       <div className="legend-item">
+         <div className="legend-box available"></div>
+         <span>Available Rooms</span>
+       </div>
+       <div className="legend-item">
+         <div className="legend-box previously-booked"></div>
+         <span>Already Booked by You</span>
+       </div>
+       <div className="legend-item">
+         <div className="legend-box newly-booked"></div>
+         <span>Your New Booking</span>
+       </div>
+       <div className="legend-item">
+         <div className="legend-box stairs"></div>
+         <span>Stairs</span>
+       </div>
+     </div>
+     <ToastContainer />
+     </div>
     );          
 };
 

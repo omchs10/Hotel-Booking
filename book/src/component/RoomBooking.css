@@ -147,3 +147,57 @@
     height: 100%;
     background-color: rgb(211, 211, 211);
   }
+
+  .room.previously-booked {
+    background-color: blue;
+    color: white;
+  }
+
+  
+  .legend {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 10px auto 0; /* Added margin-top to create space between cards */
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px; /* Added margin-right for spacing between items */
+    margin-bottom: 5px;
+  }
+  
+  .legend-box {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .legend-box.occupied {
+    background-color: grey;
+  }
+  
+  .legend-box.available {
+    background-color: white;
+    border: 1px solid #000;
+  }
+
+  
+  .legend-box.previously-booked {
+    background-color: blue;
+  }
+  
+  .legend-box.newly-booked {
+    background-color: yellow;
+    
+  }
+  
+  .legend-box.stairs {
+    background-color: lightgray;
+  }
