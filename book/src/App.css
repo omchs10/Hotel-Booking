@@ -1,0 +1,29 @@
+.App {
+  text-align: center;
+}
+
+.header-card {
+  background-color: #fff;
+  border-radius: 0px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px; /* Reduced padding to half */
+  margin: 0 auto; /* Center align the card */
+  max-width: 825px;
+  position: fixed; /* Fixed position */
+  top: 0; /* Attach to top */
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.fixed-head-sticky {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heading {
+  color: darkblue;
+  font-size: 2em;
+  margin: 0;
+}
