@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './RoomBooking.css';
 import { findBestRooms } from './findBestRooms';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RoomBooking = () => {
   const [rooms, setRooms] = useState(initializeRooms());
   const [bookedRooms, setBookedRooms] = useState([]);
   const [numRooms, setNumRooms] = useState();
+  const [loading, setLoading] = useState(false);
+  const [randomOccFlag, setRandomOccFlag] = useState(false);
 
   function initializeRooms() {
     const rooms = {};
@@ -20,23 +24,38 @@ const RoomBooking = () => {
   }
 
   function handleBooking() {
-    const bestRooms = findBestRooms(rooms, numRooms);
-    if (!bestRooms) {
-      alert('Not enough rooms available');
+    const numberOfRooms = parseInt(numRooms);
+    if (isNaN(numberOfRooms) || numberOfRooms < 1 || numberOfRooms > 5) {
+        toast.error('Please enter a valid number of rooms between 1 and 5!');
       return;
     }
+    setLoading(true);
 
-    bestRooms.forEach(room => {
-      room.booked = true;
-    });
+    setTimeout(() => {
+      const bestRooms = findBestRooms(rooms, numberOfRooms);
+      setLoading(false);
 
-    setBookedRooms([...bookedRooms, ...bestRooms]);
-    setRooms({ ...rooms });
-  }
+      if (!bestRooms) {
+        toast.error('Sorry, We do not have enough rooms available to book for you!');
+        return;
+      }
+
+      bestRooms.forEach(room => {
+        room.booked = true;
+      });
+
+      setBookedRooms([...bookedRooms, ...bestRooms]);
+      setRooms({ ...rooms });
+      toast.success('Rooms booked successfully!');
+    }, 1000); // Simulate a delay for the loader
+  
+}
 
   function handleReset() {
     setRooms(initializeRooms());
     setBookedRooms([]);
+    setNumRooms('');
+    toast.info('Reset successful!');
   }
 
   function handleRandomOccupancy() {
@@ -47,25 +66,55 @@ const RoomBooking = () => {
       });
     }
     setRooms(newRooms);
+    if(randomOccFlag){
+        toast.info('Random occupancy generated!');
+    }
+   
   }
 
+useEffect(() => {
+    handleRandomOccupancy();
+    setRandomOccFlag(true);
+}, []);
+
+const handleKeyPress = (event) => {
+    if (event.which === 13) {
+        handleBooking();
+    }
+};
+
+
+  
+
+  
+
   return (
-    <div className="room-booking card">
+    <div className={`room-booking card ${loading ? 'disabled' : ''}`}>
+      {loading && <div className="loader-overlay"><div className="loader"></div></div>}
       <div className="controls">
         <input
           type="number"
           value={numRooms}
-          onChange={(e) => setNumRooms(parseInt(e.target.value))}
+          onChange={(e) => setNumRooms(e.target.value)}
           min="1"
           max="5"
+          onKeyPress={handleKeyPress}
           placeholder="Enter number of rooms"
         />
-        <button className="btn book-btn" onClick={handleBooking}>Book Rooms</button>
-        <button className="btn" onClick={handleRandomOccupancy}>Random Occupancy</button>
-        <button className="btn" onClick={handleReset}>Reset</button>
-      </div>
+        <button className="btn book-btn" onClick={handleBooking} disabled={loading}>
+          {loading ? 'Booking...' : 'Book Rooms'}
+        </button>
+        <button className="btn" onClick={handleRandomOccupancy} disabled={loading}>
+          Random Occupancy
+        </button>
+        <button className="btn" onClick={handleReset} disabled={loading}>
+          Reset
+        </button>
+        </div>
       <div className="building">
+       
         <div className="staircase-lift">
+            
           {Array.from({ length: 43 }).map((_, index) => (
             <div key={index} className="brick"></div>
           ))}
@@ -86,10 +135,11 @@ const RoomBooking = () => {
               <div className="floor-label">Floor {floor}</div>
             </div>
           ))}
+          </div>
         </div>
+        <ToastContainer />
       </div>
-    </div>
-  );
+    );          
 };
 
 export default RoomBooking;

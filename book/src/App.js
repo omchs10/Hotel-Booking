@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <div className="header-card">
         <div className="fixed-head-sticky">
-          <h4 className="heading">Hotel Booking</h4>
+          <h4 className="heading">Hotel Room Reservation System</h4>
         </div>
       </div>
       <div className="Main">
